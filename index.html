@@ -1132,10 +1132,10 @@
             movieSearchInput.addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase(); movieLiElements.forEach(li => { const title = li.textContent.toLowerCase(); li.style.display = title.includes(searchTerm) ? '' : 'none'; }); });
 
             const games = [
-    { title: 'Subway Surfers', imageUrl: 'https://play-lh.googleusercontent.com/MmT3Av6CUMJGTthbYPt7dud3SotZ7ExEwkwy7bxNKn9_VbcsPgQ5Gl4gnni3P30rDKoA=w240-h480-rw', gameUrl: 'subway-surfers.html' },
-    { title: 'Slope', imageUrl: 'https://play-lh.googleusercontent.com/uJn2i9h7KxYQarC_c3K4qH6o7gLtflFnhD_dN14MNkzHJ1NeNFzCL69jpB5mT0vCoQs', gameUrl: 'slope.html' },
-    { title: '1v1.LOL', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfPvAOmcRDnrxMnwDWcOeGzIXBlUqyr6_RYw&s', gameUrl: '1v1-lol.html' },
-    { title: 'Krunker.io', imageUrl: 'https://imgs.crazygames.com/auto-covers/krunker-io_1x1.png?format=auto&quality=70&metadata=none', gameUrl: 'krunker.html' }
+    { title: 'Subway Surfers', imageUrl: 'https://play-lh.googleusercontent.com/MmT3Av6CUMJGTthbYPt7dud3SotZ7ExEwkwy7bxNKn9_VbcsPgQ5Gl4gnni3P30rDKoA=w240-h480-rw', gameUrl: '/games/subway-surfers.html' },
+    { title: 'Slope', imageUrl: 'https://play-lh.googleusercontent.com/uJn2i9h7KxYQarC_c3K4qH6o7gLtflFnhD_dN14MNkzHJ1NeNFzCL69jpB5mT0vCoQs', gameUrl: '/games/slope.html' },
+    { title: '1v1.LOL', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfPvAOmcRDnrxMnwDWcOeGzIXBlUqyr6_RYw&s', gameUrl: '/games/1v1-lol.html' },
+    { title: 'Krunker.io', imageUrl: 'https://imgs.crazygames.com/auto-covers/krunker-io_1x1.png?format=auto&quality=70&metadata=none', gameUrl: '/games/krunker.html' }
 ];
 
 const gamesGrid = document.getElementById('games-grid');
