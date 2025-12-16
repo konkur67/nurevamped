@@ -4,103 +4,177 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Network Unity Proxy</title>
+<link href="https://fonts.googleapis.com/css2?family=Nova+Cut&display=swap" rel="stylesheet">
 <style>
-  body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: sans-serif;
-    overflow: hidden;
-    background: #111;
-  }
-  #loading {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    z-index: 10;
-    transition: opacity 0.5s ease;
-  }
-  .spinner {
-    border: 5px solid #333;
-    border-top: 5px solid #4caf50;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 1s linear infinite;
-  }
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  #progress-container {
-    width: 70%;
-    height: 12px;
-    background: #333;
-    border-radius: 6px;
-    overflow: hidden;
-    margin-top: 20px;
-  }
-  #progress-bar {
-    width: 0%;
-    height: 100%;
-    background: #4caf50;
-    transition: width 0.2s ease;
-  }
-  iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-  }
+    :root {
+        --bg-color: #000;
+        --text-color: #fff;
+        --input-bg: #111;
+        --border-color: #333;
+        --btn-color: #fff;
+        --btn-hover: #ccc;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Nova Cut', sans-serif;
+    }
+
+    body, html {
+        height: 100%;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    header {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border-color);
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    #proxy-form {
+        display: flex;
+        padding: 15px 20px;
+        gap: 10px;
+        justify-content: center;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    #proxy-input {
+        flex-grow: 1;
+        padding: 12px 15px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        background-color: var(--input-bg);
+        color: var(--text-color);
+        font-size: 1rem;
+    }
+
+    #proxy-input:focus {
+        outline: none;
+        border-color: var(--btn-color);
+    }
+
+    #proxy-btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        background-color: var(--btn-color);
+        color: var(--bg-color);
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    #proxy-btn:hover {
+        background-color: var(--btn-hover);
+    }
+
+    #iframe-container {
+        position: relative;
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: none;
+        border-radius: 8px 8px 0 0;
+    }
+
+    #loader {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #fff;
+        z-index: 10;
+        transition: opacity 0.3s ease;
+    }
+
+    #loader.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* subtle pulse animation */
+    @keyframes pulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.7; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    #loader {
+        animation: pulse 1.2s infinite;
+    }
+
+    footer {
+        text-align: center;
+        padding: 10px;
+        border-top: 1px solid var(--border-color);
+        font-size: 0.9rem;
+        color: #aaa;
+    }
+
 </style>
 </head>
 <body>
 
-<div id="loading">
-  <div class="spinner"></div>
-  <div id="progress-container">
-    <div id="progress-bar"></div>
-  </div>
+<header>Network Unity Proxy</header>
+
+<form id="proxy-form">
+    <input type="text" id="proxy-input" placeholder="Enter URL to browse..." required>
+    <button type="submit" id="proxy-btn">Go</button>
+</form>
+
+<div id="iframe-container">
+    <div id="loader">Loading...</div>
+    <iframe id="proxy-frame"></iframe>
 </div>
 
-<iframe id="proxyFrame" src=""></iframe>
+<footer>&copy; Network Unity 2025</footer>
 
 <script>
-  const params = new URLSearchParams(window.location.search);
-  const url = params.get('url');
-  const iframe = document.getElementById('proxyFrame');
-  const loading = document.getElementById('loading');
-  const progressBar = document.getElementById('progress-bar');
+    const form = document.getElementById('proxy-form');
+    const input = document.getElementById('proxy-input');
+    const iframe = document.getElementById('proxy-frame');
+    const loader = document.getElementById('loader');
 
-  if (url) {
-    const fullUrl = url.startsWith('http://') || url.startsWith('https://') ? url : 'https://' + url;
-    iframe.src = fullUrl;
-  } else {
-    iframe.src = 'about:blank';
-  }
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const url = input.value.trim();
+        if (!url) return;
 
-  let progress = 0;
-  const interval = setInterval(() => {
-    if (progress < 90) {
-      progress += Math.random() * 5;
-      progressBar.style.width = progress + '%';
-    }
-  }, 100);
+        
+        let finalUrl = url;
+        if (!/^https?:\/\//i.test(url)) {
+            finalUrl = 'https://' + url;
+        }
 
-  iframe.addEventListener('load', () => {
-    clearInterval(interval);
-    progressBar.style.width = '100%';
-    setTimeout(() => {
-      loading.style.opacity = 0;
-      setTimeout(() => loading.style.display = 'none', 500);
-    }, 300);
-  });
+        loader.classList.remove('hidden'); 
+        iframe.style.display = 'block';
+        iframe.src = finalUrl;
+    });
+
+ 
+    iframe.addEventListener('load', () => {
+        loader.classList.add('hidden');
+    });
 </script>
 
 </body>
