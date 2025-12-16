@@ -855,10 +855,28 @@
 				<div class="tab-content-inner">
 					<h2 class="home-title">Network Unity</h2>
 					<p>A compact hub for your digital needs.</p>
-					<form id="home-proxy-form" action="/proxy.html" method="GET" target="_blank">
-    <input type="text" id="home-proxy-input" name="q" placeholder="Surf the web" autocomplete="off">
-    <button id="home-proxy-button" type="submit">Go</button>
-                   </form>
+					<form id="search">
+  <input id="url" type="text" placeholder="Search the web or enter URL">
+  <button type="submit">Go</button>
+</form>
+
+<script>
+document.getElementById('search').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let input = document.getElementById('url').value.trim();
+    if (!input) return;
+    let target;
+    if (input.startsWith('http://') || input.startsWith('https://')) {
+        target = input;
+    } else if (input.includes('.')) {
+        target = 'https://' + input;
+    } else {
+        target = 'https://www.google.com/search?q=' + encodeURIComponent(input);
+    }
+    window.location.href = 'proxy.html?url=' + encodeURIComponent(target);
+});
+</script>
+
 
 				</div>
 			</section>
