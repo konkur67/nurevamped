@@ -4,178 +4,86 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Network Unity Proxy</title>
-<link href="https://fonts.googleapis.com/css2?family=Nova+Cut&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nova+Cut&family=Nova+Script&display=swap" rel="stylesheet">
 <style>
-    :root {
-        --bg-color: #000;
-        --text-color: #fff;
-        --input-bg: #111;
-        --border-color: #333;
-        --btn-color: #fff;
-        --btn-hover: #ccc;
-    }
-
-    * {
+    body {
         margin: 0;
         padding: 0;
-        box-sizing: border-box;
         font-family: 'Nova Cut', sans-serif;
-    }
-
-    body, html {
-        height: 100%;
-        background-color: var(--bg-color);
-        color: var(--text-color);
+        background: #000;
+        color: #fff;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
+        height: 100vh;
     }
-
     header {
-        padding: 15px 20px;
-        border-bottom: 1px solid var(--border-color);
         text-align: center;
-        font-size: 1.5rem;
-        font-weight: bold;
+        padding: 15px;
+        border-bottom: 1px solid #444;
     }
-
-    #proxy-form {
-        display: flex;
-        padding: 15px 20px;
-        gap: 10px;
-        justify-content: center;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    #proxy-input {
-        flex-grow: 1;
-        padding: 12px 15px;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-        background-color: var(--input-bg);
-        color: var(--text-color);
-        font-size: 1rem;
-    }
-
-    #proxy-input:focus {
-        outline: none;
-        border-color: var(--btn-color);
-    }
-
-    #proxy-btn {
-        padding: 12px 20px;
-        border: none;
-        border-radius: 8px;
-        background-color: var(--btn-color);
-        color: var(--bg-color);
-        cursor: pointer;
-        transition: 0.2s;
-    }
-
-    #proxy-btn:hover {
-        background-color: var(--btn-hover);
-    }
-
-    #iframe-container {
-        position: relative;
-        flex-grow: 1;
+    form {
         display: flex;
         justify-content: center;
-        align-items: center;
+        margin: 20px;
     }
-
-    iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-        display: none;
-        border-radius: 8px 8px 0 0;
-    }
-
-    #loader {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: #000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #fff;
-        z-index: 10;
-        transition: opacity 0.3s ease;
-    }
-
-    #loader.hidden {
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    /* subtle pulse animation */
-    @keyframes pulse {
-        0% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.1); opacity: 0.7; }
-        100% { transform: scale(1); opacity: 1; }
-    }
-
-    #loader {
-        animation: pulse 1.2s infinite;
-    }
-
-    footer {
-        text-align: center;
+    input[type="text"] {
+        width: 60%;
         padding: 10px;
-        border-top: 1px solid var(--border-color);
-        font-size: 0.9rem;
-        color: #aaa;
+        border: 1px solid #444;
+        border-radius: 5px 0 0 5px;
+        background: #111;
+        color: #fff;
     }
-
+    button {
+        padding: 10px 20px;
+        border: 1px solid #444;
+        border-left: none;
+        background: #222;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 0 5px 5px 0;
+    }
+    button:hover {
+        background: #555;
+    }
+    #proxy-frame {
+        flex-grow: 1;
+        width: 100%;
+        border: none;
+        background: #000;
+    }
 </style>
 </head>
 <body>
-
-<header>Network Unity Proxy</header>
-
+<header>
+    <h1>Network Unity Proxy</h1>
+</header>
 <form id="proxy-form">
-    <input type="text" id="proxy-input" placeholder="Enter URL to browse..." required>
-    <button type="submit" id="proxy-btn">Go</button>
+    <input type="text" id="proxy-input" placeholder="Enter URL or search term...">
+    <button type="submit">Go</button>
 </form>
-
-<div id="iframe-container">
-    <div id="loader">Loading...</div>
-    <iframe id="proxy-frame"></iframe>
-</div>
-
-<footer>&copy; Network Unity 2025</footer>
-
+<iframe id="proxy-frame" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+<script src="uv/uv.client.js"></script>
 <script>
-    const form = document.getElementById('proxy-form');
-    const input = document.getElementById('proxy-input');
-    const iframe = document.getElementById('proxy-frame');
-    const loader = document.getElementById('loader');
+const form = document.getElementById('proxy-form');
+const input = document.getElementById('proxy-input');
+const iframe = document.getElementById('proxy-frame');
 
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        const url = input.value.trim();
-        if (!url) return;
-
-        
-        let finalUrl = url;
-        if (!/^https?:\/\//i.test(url)) {
-            finalUrl = 'https://' + url;
-        }
-
-        loader.classList.remove('hidden'); 
-        iframe.style.display = 'block';
-        iframe.src = finalUrl;
+function proxyUrl(url) {
+    if (!/^https?:\/\//i.test(url)) {
+        url = "https://www.google.com/search?q=" + encodeURIComponent(url);
+    }
+    uvClientFetch(url).then(response => {
+        iframe.srcdoc = response;
+    }).catch(err => {
+        iframe.srcdoc = `<h2 style="color:white;text-align:center;margin-top:50px;">Error loading URL: ${err}</h2>`;
     });
+}
 
- 
-    iframe.addEventListener('load', () => {
-        loader.classList.add('hidden');
-    });
+form.addEventListener('submit', e => {
+    e.preventDefault();
+    proxyUrl(input.value.trim());
+});
 </script>
-
 </body>
 </html>
