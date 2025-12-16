@@ -1132,21 +1132,32 @@
             movieSearchInput.addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase(); movieLiElements.forEach(li => { const title = li.textContent.toLowerCase(); li.style.display = title.includes(searchTerm) ? '' : 'none'; }); });
 
             const games = [
-                { title: 'Subway Surfers', imageUrl: 'https://i.ibb.co/LgL426Y/subway-surfers.png', gameUrl: 'https://www.kiloo.com/subway-surfers/' },
-                { title: 'Slope', imageUrl: 'https://i.ibb.co/dGtFhY8/slope.png', gameUrl: 'https://slopegame.io/' },
-                { title: '1v1.LOL', imageUrl: 'https://i.ibb.co/L8KFY1t/1v1-lol.png', gameUrl: 'https://1v1.lol/' },
-                { title: 'Krunker.io', imageUrl: 'https://i.ibb.co/0VfW0G5/krunker.png', gameUrl: 'https://krunker.io/' }
-            ];
-            const gamesGrid = document.getElementById('games-grid');
-            games.forEach(game => {
-                const card = document.createElement('div');
-                card.className = 'game-card';
-                card.innerHTML = `<img src="${game.imageUrl}" alt="${game.title}" class="game-img"><div class="game-info"><h3 class="game-title">${game.title}</h3><button class="play-button">Play</button></div>`;
-                card.querySelector('.play-button').addEventListener('click', () => {
-                    window.open('proxy.html#' + encodeURIComponent(__uv$config.prefix + __uv$config.encodeUrl(game.gameUrl)), '_blank');
-                });
-                gamesGrid.appendChild(card);
-            });
+    { title: 'Subway Surfers', imageUrl: 'https://i.ibb.co/LgL426Y/subway-surfers.png', gameUrl: 'subway-surfers.html' },
+    { title: 'Slope', imageUrl: 'https://i.ibb.co/dGtFhY8/slope.png', gameUrl: 'slope.html' },
+    { title: '1v1.LOL', imageUrl: 'https://i.ibb.co/L8KFY1t/1v1-lol.png', gameUrl: '1v1-lol.html' },
+    { title: 'Krunker.io', imageUrl: 'https://i.ibb.co/0VfW0G5/krunker.png', gameUrl: 'krunker.html' }
+];
+
+const gamesGrid = document.getElementById('games-grid');
+
+games.forEach(game => {
+    const card = document.createElement('div');
+    card.className = 'game-card';
+    card.innerHTML = `
+        <img class="game-img" src="${game.imageUrl}" alt="${game.title}">
+        <div class="game-info">
+            <div class="game-title">${game.title}</div>
+            <button class="play-button">Play</button>
+        </div>
+    `;
+    card.querySelector('.play-button').addEventListener('click', () => {
+        const iframe = document.getElementById('movie-player');
+        iframe.style.display = 'block';
+        iframe.src = game.gameUrl;
+    });
+    gamesGrid.appendChild(card);
+});
+
 
             const themes = {
                 dark: {
