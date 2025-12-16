@@ -44,7 +44,7 @@ All under **one site**.
 </p>
 
 TODO:
-- change the universal theme of the site, the home page is black and white my default but the rest of it isnt.
+- ~~change the universal theme of the site, the home page is black and white my default but the rest of it isnt.~~
 
 - fix the proxy
 
@@ -52,11 +52,11 @@ TODO:
 
 - put some games in
 
-- add yourself in credits
+- ~~add yourself in credits~~
 
 - add a movie icon
 
-- change the favicon
+- ~~change the favicon~~
 
 - put all tabs on the same page
 because it has a delay for loading tabs
@@ -68,6 +68,6 @@ to-do list
 - add credits for gn math and truffled for some games as a caption at the top of games
 - make sure the ai is working
 - add about blank cloaking
-- remove hazel from credits as he is no longer on development
+- ~~remove hazel from credits as he is no longer on development~~
 - add these the games in this folder
 https://drive.google.com/drive/folders/1f51UycyXYYD_a8-JUlcUb8eP0-5QrCGF?usp=sharing
