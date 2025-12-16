@@ -4,9 +4,36 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Network Unity Proxy</title>
+  <link rel="icon" href="nu.png" type="image/png">
+ 
+  <link rel="stylesheet" href="/uv/uv.style.css">
 </head>
-<body>
+<body style="margin:0; height:100vh; overflow:hidden;">
+
+  <div id="uv-container" style="width:100%; height:100%;"></div>
+
+
   <script src="/uv/uv.bundle.js"></script>
   <script src="/uv/uv.config.js"></script>
+
+  <script>
+    
+    const params = new URLSearchParams(window.location.search);
+    const targetURL = params.get('q');
+
+    if (!targetURL) {
+      document.body.innerHTML = "<h2 style='color:white; text-align:center; margin-top:20vh;'>No URL provided!</h2>";
+    } else {
+    
+      if (typeof UV !== 'undefined') {
+        UV.init({
+          container: '#uv-container',
+          url: targetURL
+        });
+      } else {
+        console.error('Ultraviolet (UV) not loaded properly.');
+      }
+    }
+  </script>
 </body>
 </html>
